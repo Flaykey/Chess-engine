@@ -1,14 +1,9 @@
 #include"include/game.h"
 
-PIECES board[64];
+
 Texture2D texArray[13];
 TURN turn;
-int bKingSideCastle;
-int bQueenSideCastle;
-int wKingSideCastle;
-int wQueenSideCastle;
-int enpassant;
-int gameOver;
+
 
 
 

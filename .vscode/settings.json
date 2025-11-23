@@ -3,6 +3,7 @@
         "assets.h": "c",
         "raylib.h": "c",
         "game.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "chess.h": "c"
     }
 }
