@@ -231,8 +231,8 @@ void Input()
             }
         }
         if(board[selectedPieceIndex] == BKING){
-            if(id % 8 == 1 && (bQueenSideCastle)) {
-                board[2] = BROOK;
+            if(id % 8 == 2 && (bQueenSideCastle)) {
+                board[3] = BROOK;
                 board[0] = EMPTY;
             }else if(id % 8 == 6 && (bKingSideCastle)) {
                 board[5] = BROOK;
@@ -242,8 +242,8 @@ void Input()
             bKingSideCastle = false;
         }
         if(board[selectedPieceIndex] == WKING){
-            if(id % 8 == 1 && (wQueenSideCastle)) {
-                board[58] = WROOK;
+            if(id % 8 == 2 && (wQueenSideCastle)) {
+                board[59] = WROOK;
                 board[56] = EMPTY;
             }else if(id % 8 == 6 && (wKingSideCastle)) {
                 board[61] = WROOK;

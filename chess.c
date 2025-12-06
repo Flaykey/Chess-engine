@@ -178,7 +178,7 @@ uint64_t MoveGeneration(PIECES piece, int index)
         
         if(piece == BKING){
             if(bQueenSideCastle){
-                int canMoveCoord[2] = {position[0] -3,position[1]};
+                int canMoveCoord[2] = {position[0] -2,position[1]};
                 if(!(canMoveCoord[0] >=0 && canMoveCoord[0] < 8 && canMoveCoord[1] >=0 && canMoveCoord[1] < 8)) return moves;
                 int canMoveIndex = CoordToIndex(canMoveCoord);
                 if(board[canMoveIndex] == EMPTY ){ moves |= (1ULL << canMoveIndex);}
@@ -196,7 +196,7 @@ uint64_t MoveGeneration(PIECES piece, int index)
         }
         if(piece == WKING){
             if(wQueenSideCastle){
-                int canMoveCoord[2] = {position[0] -3,position[1]};
+                int canMoveCoord[2] = {position[0] -2,position[1]};
                 if(!(canMoveCoord[0] >=0 && canMoveCoord[0] < 8 && canMoveCoord[1] >=0 && canMoveCoord[1] < 8)) return moves;
                 int canMoveIndex = CoordToIndex(canMoveCoord);
                 if(board[canMoveIndex] == EMPTY ){ moves |= (1ULL << canMoveIndex);}
