@@ -74,15 +74,38 @@ uint64_t MoveGeneration(PIECES piece, int index)
     uint64_t moves = 0ULL;
     if(piece == WPAWN){
         if(board[index - 8 ] == EMPTY) moves |= 1ULL << (index - 8);
-        else return moves;
         if((index / 8) == 6 && board[index - 16 ] == EMPTY) moves |= 1ULL << (index-16);
+        int* position = IndexToCoord(index);
+        int canMoveCoord[2] = {position[0] + 1,position[1] -1 };
+        if((canMoveCoord[0] >=0 && canMoveCoord[0] < 8 && canMoveCoord[1] >=0 && canMoveCoord[1] < 8)){
+            int canMoveIndex = CoordToIndex(canMoveCoord);
+            if((board[canMoveIndex] >= BPAWN && board[canMoveIndex] <= BQUEEN) || canMoveIndex == enpassant){ moves |= (1ULL << canMoveIndex);}
+            
+        }
+        canMoveCoord[0] -= 2;
+        if((canMoveCoord[0] >=0 && canMoveCoord[0] < 8 && canMoveCoord[1] >=0 && canMoveCoord[1] < 8)){
+            int canMoveIndex = CoordToIndex(canMoveCoord);
+            if((board[canMoveIndex] >= BPAWN && board[canMoveIndex] <= BQUEEN) || canMoveIndex == enpassant){ moves |= (1ULL << canMoveIndex);}
+        }
+        free(position);
+
         return moves;
     }
     if(piece == BPAWN){
         if(board[index + 8 ] == EMPTY) moves |= 1ULL << (index + 8);
-        else return moves;
         if((index / 8) == 1 && board[index + 16 ] == EMPTY) moves |= 1ULL << (index+16);
-
+        int* position = IndexToCoord(index);
+        int canMoveCoord[2] = {position[0] + 1,position[1] +1 };
+        if((canMoveCoord[0] >=0 && canMoveCoord[0] < 8 && canMoveCoord[1] >=0 && canMoveCoord[1] < 8)){
+            int canMoveIndex = CoordToIndex(canMoveCoord);
+            if((board[canMoveIndex] >= WPAWN && board[canMoveIndex] <= WQUEEN) || canMoveIndex == enpassant){ moves |= (1ULL << canMoveIndex);}
+        }
+        canMoveCoord[0] -= 2;
+        if((canMoveCoord[0] >=0 && canMoveCoord[0] < 8 && canMoveCoord[1] >=0 && canMoveCoord[1] < 8)){
+            int canMoveIndex = CoordToIndex(canMoveCoord);
+            if((board[canMoveIndex] >= WPAWN && board[canMoveIndex] <= WQUEEN) || canMoveIndex == enpassant){ moves |= (1ULL << canMoveIndex);}
+        }
+        free(position);
         return moves;
     }
     if(piece == BBISHOP || piece ==WBISHOP){

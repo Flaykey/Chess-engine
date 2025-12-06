@@ -208,6 +208,12 @@ void Input()
         SetSelectedTile(moves);
     }
     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && selectedMask[id] == 1 ){
+        turn = !turn;
+        if(id == enpassant){
+            if(board[selectedPieceIndex] == WPAWN) board[id + 8] = EMPTY;
+            if(board[selectedPieceIndex] == BPAWN) board[id - 8] = EMPTY;
+
+        }
         if(board[selectedPieceIndex] == BROOK){
             if(selectedPieceIndex % 8 == 0){
                 bQueenSideCastle = false;
@@ -225,13 +231,32 @@ void Input()
             }
         }
         if(board[selectedPieceIndex] == BKING){
+            if(id % 8 == 1 && (bQueenSideCastle)) {
+                board[2] = BROOK;
+                board[0] = EMPTY;
+            }else if(id % 8 == 6 && (bKingSideCastle)) {
+                board[5] = BROOK;
+                board[7] = EMPTY;
+            }
             bQueenSideCastle = false;
             bKingSideCastle = false;
         }
         if(board[selectedPieceIndex] == WKING){
+            if(id % 8 == 1 && (wQueenSideCastle)) {
+                board[58] = WROOK;
+                board[56] = EMPTY;
+            }else if(id % 8 == 6 && (wKingSideCastle)) {
+                board[61] = WROOK;
+                board[63] = EMPTY;
+            }
             wQueenSideCastle = false;
             wKingSideCastle = false;
         }
+        if(board[selectedPieceIndex] == WPAWN && selectedPieceIndex - id == 16) enpassant = id + 8;
+        else if(board[selectedPieceIndex] == BPAWN && id - selectedPieceIndex == 16) enpassant = id - 8;
+        else enpassant = -1;
+        printf("\nen passant square %d \n", enpassant);
+        
         printf("SELECETED!!\n");
         board[id] = board[selectedPieceIndex];
         board[selectedPieceIndex] = EMPTY;
@@ -239,9 +264,9 @@ void Input()
         for(int i = 0 ; i<64 ; i++){
             if( selectedMask[i] == 1) selectedMask[i] = EMPTY;
         }
-        turn = !turn;
     }
 }
+
 
 void InitGame(int w, int h, const char* c)
 {
