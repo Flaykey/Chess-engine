@@ -5,4 +5,4 @@
 
 # Board Preview
 
-![Alt text](readme_images\boardPreview.png)
+![Alt text](readme_images/boardPreview.png)
