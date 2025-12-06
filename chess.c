@@ -12,6 +12,8 @@ int enpassant;
 int gameOver;
 int knightmoves[8][2] = {{1,2},{-1,2},{1,-2},{-1,-2},
                          {2,1},{-2,1},{2,-1},{-2,-1}};
+int slidingMoves[8][2] = {{1,1},{-1,1},{1,-1},{-1,-1},
+                          {0,1},{1,0},{0,-1},{-1,0}};                 
 
 int *IndexToCoord(int id)
 {
@@ -70,7 +72,129 @@ void printBinary(uint64_t x) {
 uint64_t MoveGeneration(PIECES piece, int index)
 {
     uint64_t moves = 0ULL;
+    if(piece == WPAWN){
+        if(board[index - 8 ] == EMPTY) moves |= 1ULL << (index - 8);
+        else return moves;
+        if((index / 8) == 6 && board[index - 16 ] == EMPTY) moves |= 1ULL << (index-16);
+        return moves;
+    }
+    if(piece == BPAWN){
+        if(board[index + 8 ] == EMPTY) moves |= 1ULL << (index + 8);
+        else return moves;
+        if((index / 8) == 1 && board[index + 16 ] == EMPTY) moves |= 1ULL << (index+16);
 
+        return moves;
+    }
+    if(piece == BBISHOP || piece ==WBISHOP){
+        printf("BISHOP SELECTED GENERATING MOVE!!\n");
+        int* position = IndexToCoord(index);
+        for(int i = 0; i<4; i++){
+            for(int j = 1; j<8; j++){
+                int canMoveCoord[2] = {position[0] + slidingMoves[i][0]*j,position[1] + slidingMoves[i][1] * j};
+                if(!(canMoveCoord[0] >=0 && canMoveCoord[0] < 8 && canMoveCoord[1] >=0 && canMoveCoord[1] < 8)) continue;
+                int canMoveIndex = CoordToIndex(canMoveCoord);
+                if(board[canMoveIndex] == EMPTY ){ moves |= (1ULL << canMoveIndex);}
+                else if((piece >= WPAWN && piece <= WQUEEN) && (board[canMoveIndex] >= BPAWN && board[canMoveIndex] <= BQUEEN)){ moves |= (1ULL << canMoveIndex); break;}
+                else if((piece >= BPAWN && piece <= BQUEEN) && (board[canMoveIndex] >= WPAWN && board[canMoveIndex] <= WQUEEN)){ moves |= (1ULL << canMoveIndex); break;}
+                else break;
+            }
+        }
+        printBinary(moves);
+        free(position);
+        return moves;
+    }
+    if(piece == BROOK || piece ==WROOK){
+        printf("ROOK SELECTED GENERATING MOVE!!\n");
+        int* position = IndexToCoord(index);
+        for(int i = 4; i<8; i++){
+            for(int j = 1; j<8; j++){
+                int canMoveCoord[2] = {position[0] + slidingMoves[i][0]*j,position[1] + slidingMoves[i][1] * j};
+                if(!(canMoveCoord[0] >=0 && canMoveCoord[0] < 8 && canMoveCoord[1] >=0 && canMoveCoord[1] < 8)) continue;
+                int canMoveIndex = CoordToIndex(canMoveCoord);
+                if(board[canMoveIndex] == EMPTY ){ moves |= (1ULL << canMoveIndex);}
+                else if((piece >= WPAWN && piece <= WQUEEN) && (board[canMoveIndex] >= BPAWN && board[canMoveIndex] <= BQUEEN)){ moves |= (1ULL << canMoveIndex); break;}
+                else if((piece >= BPAWN && piece <= BQUEEN) && (board[canMoveIndex] >= WPAWN && board[canMoveIndex] <= WQUEEN)){ moves |= (1ULL << canMoveIndex); break;}
+                else break;
+            }
+        }
+        printBinary(moves);
+        free(position);
+
+        return moves;
+    }
+    if(piece == BQUEEN || piece ==WQUEEN){
+        printf("BISHOP SELECTED GENERATING MOVE!!\n");
+        int* position = IndexToCoord(index);
+        for(int i = 0; i<8; i++){
+            for(int j = 1; j<8; j++){
+                int canMoveCoord[2] = {position[0] + slidingMoves[i][0]*j,position[1] + slidingMoves[i][1] * j};
+                if(!(canMoveCoord[0] >=0 && canMoveCoord[0] < 8 && canMoveCoord[1] >=0 && canMoveCoord[1] < 8)) continue;
+                int canMoveIndex = CoordToIndex(canMoveCoord);
+                if(board[canMoveIndex] == EMPTY ){ moves |= (1ULL << canMoveIndex);}
+                else if((piece >= WPAWN && piece <= WQUEEN) && (board[canMoveIndex] >= BPAWN && board[canMoveIndex] <= BQUEEN)){ moves |= (1ULL << canMoveIndex); break;}
+                else if((piece >= BPAWN && piece <= BQUEEN) && (board[canMoveIndex] >= WPAWN && board[canMoveIndex] <= WQUEEN)){ moves |= (1ULL << canMoveIndex); break;}
+                else break;
+            }
+        }
+        printBinary(moves);
+        free(position);
+
+        return moves;
+    }
+    if(piece == BKING || piece ==WKING){
+        printf("BISHOP SELECTED GENERATING MOVE!!\n");
+        int* position = IndexToCoord(index);
+        for(int i = 0; i<8; i++){
+                int canMoveCoord[2] = {position[0] + slidingMoves[i][0],position[1] + slidingMoves[i][1]};
+                if(!(canMoveCoord[0] >=0 && canMoveCoord[0] < 8 && canMoveCoord[1] >=0 && canMoveCoord[1] < 8)) continue;
+                int canMoveIndex = CoordToIndex(canMoveCoord);
+                if(board[canMoveIndex] == EMPTY ){ moves |= (1ULL << canMoveIndex);}
+                else if((piece >= WPAWN && piece <= WQUEEN) && (board[canMoveIndex] >= BPAWN && board[canMoveIndex] <= BQUEEN)){ moves |= (1ULL << canMoveIndex);}
+                else if((piece >= BPAWN && piece <= BQUEEN) && (board[canMoveIndex] >= WPAWN && board[canMoveIndex] <= WQUEEN)){ moves |= (1ULL << canMoveIndex);}
+        }
+        
+        if(piece == BKING){
+            if(bQueenSideCastle){
+                int canMoveCoord[2] = {position[0] -3,position[1]};
+                if(!(canMoveCoord[0] >=0 && canMoveCoord[0] < 8 && canMoveCoord[1] >=0 && canMoveCoord[1] < 8)) return moves;
+                int canMoveIndex = CoordToIndex(canMoveCoord);
+                if(board[canMoveIndex] == EMPTY ){ moves |= (1ULL << canMoveIndex);}
+                else if((piece >= WPAWN && piece <= WQUEEN) && (board[canMoveIndex] >= BPAWN && board[canMoveIndex] <= BQUEEN)){ moves |= (1ULL << canMoveIndex);}
+                else if((piece >= BPAWN && piece <= BQUEEN) && (board[canMoveIndex] >= WPAWN && board[canMoveIndex] <= WQUEEN)){ moves |= (1ULL << canMoveIndex);}
+            }
+            if(bKingSideCastle){
+                int canMoveCoord[2] = {position[0] +2,position[1]};
+                if(!(canMoveCoord[0] >=0 && canMoveCoord[0] < 8 && canMoveCoord[1] >=0 && canMoveCoord[1] < 8)) return moves;
+                int canMoveIndex = CoordToIndex(canMoveCoord);
+                if(board[canMoveIndex] == EMPTY ){ moves |= (1ULL << canMoveIndex);}
+                else if((piece >= WPAWN && piece <= WQUEEN) && (board[canMoveIndex] >= BPAWN && board[canMoveIndex] <= BQUEEN)){ moves |= (1ULL << canMoveIndex);}
+                else if((piece >= BPAWN && piece <= BQUEEN) && (board[canMoveIndex] >= WPAWN && board[canMoveIndex] <= WQUEEN)){ moves |= (1ULL << canMoveIndex);}
+            }
+        }
+        if(piece == WKING){
+            if(wQueenSideCastle){
+                int canMoveCoord[2] = {position[0] -3,position[1]};
+                if(!(canMoveCoord[0] >=0 && canMoveCoord[0] < 8 && canMoveCoord[1] >=0 && canMoveCoord[1] < 8)) return moves;
+                int canMoveIndex = CoordToIndex(canMoveCoord);
+                if(board[canMoveIndex] == EMPTY ){ moves |= (1ULL << canMoveIndex);}
+                else if((piece >= WPAWN && piece <= WQUEEN) && (board[canMoveIndex] >= BPAWN && board[canMoveIndex] <= BQUEEN)){ moves |= (1ULL << canMoveIndex);}
+                else if((piece >= BPAWN && piece <= BQUEEN) && (board[canMoveIndex] >= WPAWN && board[canMoveIndex] <= WQUEEN)){ moves |= (1ULL << canMoveIndex);}
+            }
+            if(wKingSideCastle){
+                int canMoveCoord[2] = {position[0] +2,position[1]};
+                if(!(canMoveCoord[0] >=0 && canMoveCoord[0] < 8 && canMoveCoord[1] >=0 && canMoveCoord[1] < 8)) return moves;
+                int canMoveIndex = CoordToIndex(canMoveCoord);
+                if(board[canMoveIndex] == EMPTY ){ moves |= (1ULL << canMoveIndex);}
+                else if((piece >= WPAWN && piece <= WQUEEN) && (board[canMoveIndex] >= BPAWN && board[canMoveIndex] <= BQUEEN)){ moves |= (1ULL << canMoveIndex);}
+                else if((piece >= BPAWN && piece <= BQUEEN) && (board[canMoveIndex] >= WPAWN && board[canMoveIndex] <= WQUEEN)){ moves |= (1ULL << canMoveIndex);}
+            }
+        }
+        
+        printBinary(moves);
+        free(position);
+
+        return moves;
+    }
     if(piece == BKNIGHT || piece == WKNIGHT){
         int* position = IndexToCoord(index);
 
@@ -89,7 +213,8 @@ uint64_t MoveGeneration(PIECES piece, int index)
 
         }
         free(position);
+        return moves;
     }
-    return moves;
+    
 }
 

@@ -10,6 +10,7 @@ extern TURN turn;
 extern uint64_t moves;
 
 void SetupBoard(PIECES* board, const char* position);
+void PrintRules();
 void loadTexarray();
 void DrawBoard(PIECES* board);
 void Input();
